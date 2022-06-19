@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 
+# from session_cleanup.settings import weekly_schedule, nightly_schedule
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,9 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_celery_beat',
-    'django_celery_results',
     'celery_redis',
+    # for rabbitmq
+    'django_celery_results',
+    # for recurrent tasks
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -53,21 +57,34 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'django_redis_celery.urls'
 
+# celery-redis
+# CELERY_BROKER_URL = 'redis://localhost:6379'
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+
+# celery-rabbitmq
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
+CELERY_BROKER_URL = 'amqp://localhost'
+
 # celery
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Europe/Amsterdam'
 # CELERY_IGNORE_RESULT = False
 # CELERY_TRACK_STARTED = True
-# CELERYD_LOG_LEVEL = "INFO"
+
+# CELERY_BEAT_SCHEDULE = {
+#     "weather": {
+#         "task": "celery_redis.tasks.fetch_weather",
+#         "schedule": 10.0,
+#     },
+# }
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
