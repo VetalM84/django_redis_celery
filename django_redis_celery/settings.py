@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'celery_redis',
+    'wsgi_celery',
     # for rabbitmq
     'django_celery_results',
     # for recurrent tasks
