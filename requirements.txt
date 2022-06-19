@@ -1,7 +1,10 @@
 Django~=3.1.7
 celery==5.2.7
-redis==4.3.3
 requests==2.28.0
+# for Redis
+redis==4.3.3
+# for RabbitMQ
 django-celery-results==2.3.1
+# for recurrent tasks
 django_celery_beat==2.3.0
-django-session-cleanup
+# django-session-cleanup
