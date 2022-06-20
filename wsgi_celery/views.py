@@ -1,3 +1,1 @@
-from django.shortcuts import render
-
-# Create your views here.
+from django.contrib import messagesfrom django.views.generic import ListViewfrom django.views.generic.edit import FormViewfrom django.shortcuts import redirectfrom .form import TotalFormfrom .models import Botfrom .tasks import create_botclass GenerateBotView(FormView):    template_name = 'generate_bots.html'    form_class = TotalForm    success_url = '/bots-list/'    def form_valid(self, form):        create_bot.delay(form.cleaned_data.get('total'))        messages.success(self.request, 'Bot generation started')        return redirect("bots_list")class BotsListView(ListView):    model = Bot    template_name = 'bot_list.html'
