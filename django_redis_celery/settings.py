@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 
-# from session_cleanup.settings import weekly_schedule, nightly_schedule
+from session_cleanup.settings import weekly_schedule, nightly_schedule
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
@@ -58,6 +58,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'django_redis_celery.urls'
 
+SESSION_COOKIE_AGE = 3600
+
 # celery-redis
 # CELERY_BROKER_URL = 'redis://localhost:6379'
 # CELERY_RESULT_BACKEND = 'redis://localhost:6379'
@@ -75,12 +77,13 @@ CELERY_TIMEZONE = 'Europe/Amsterdam'
 # CELERY_IGNORE_RESULT = False
 # CELERY_TRACK_STARTED = True
 
-# CELERY_BEAT_SCHEDULE = {
-#     "weather": {
-#         "task": "celery_redis.tasks.fetch_weather",
-#         "schedule": 10.0,
-#     },
-# }
+CELERY_BEAT_SCHEDULE = {
+    "weather": {
+        "task": "celery_redis.tasks.fetch_weather",
+        "schedule": 20.0,
+        "session_cleanup": weekly_schedule,
+    },
+}
 
 TEMPLATES = [
     {
